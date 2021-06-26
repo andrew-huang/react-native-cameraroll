@@ -13,7 +13,8 @@ declare namespace CameraRoll {
     | 'Faces'
     | 'Library'
     | 'PhotoStream'
-    | 'SavedPhotos';
+    | 'SavedPhotos'
+    | 'SmartAlbum';
 
   type AssetType = 'All' | 'Videos' | 'Photos';
 
