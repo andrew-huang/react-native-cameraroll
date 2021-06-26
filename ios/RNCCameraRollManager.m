@@ -36,6 +36,7 @@ RCT_ENUM_CONVERTER(PHAssetCollectionSubtype, (@{
    @"savedphotos": @(PHAssetCollectionSubtypeAny), // This was ALAssetsGroupSavedPhotos, seems to have no direct correspondence in PHAssetCollectionSubtype
    @"screenshots": @(PHAssetCollectionSubtypeSmartAlbumScreenshots),
    @"selfies": @(PHAssetCollectionSubtypeSmartAlbumSelfPortraits),
+   @"smartalbum": @(PHAssetCollectionSubtypeSmartAlbumUserLibrary),
 }), PHAssetCollectionSubtypeAny, integerValue)
 
 
