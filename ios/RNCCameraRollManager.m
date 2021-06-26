@@ -34,6 +34,8 @@ RCT_ENUM_CONVERTER(PHAssetCollectionSubtype, (@{
    @"photostream": @(PHAssetCollectionSubtypeAlbumMyPhotoStream),
    @"saved-photos": @(PHAssetCollectionSubtypeAny), // incorrect, but legacy correspondence in PHAssetCollectionSubtype
    @"savedphotos": @(PHAssetCollectionSubtypeAny), // This was ALAssetsGroupSavedPhotos, seems to have no direct correspondence in PHAssetCollectionSubtype
+   @"screenshots": @(PHAssetCollectionSubtypeSmartAlbumScreenshots),
+   @"selfies": @(PHAssetCollectionSubtypeSmartAlbumSelfPortraits),
 }), PHAssetCollectionSubtypeAny, integerValue)
 
 
@@ -203,6 +205,7 @@ RCT_EXPORT_METHOD(getAlbums:(NSDictionary *)params
   NSString *const mediaType = [params objectForKey:@"assetType"] ? [RCTConvert NSString:params[@"assetType"]] : @"All";
   PHFetchOptions* options = [[PHFetchOptions alloc] init];
   PHFetchResult<PHAssetCollection *> *const assetCollectionFetchResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:options];
+  PHFetchResult<PHAssetCollection *> *const assetCollectionFetchResult2 = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:options];
   NSMutableArray * result = [NSMutableArray new];
   [assetCollectionFetchResult enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
     PHFetchOptions *const assetFetchOptions = [RCTConvert PHFetchOptionsFromMediaType:mediaType fromTime:0 toTime:0];
@@ -215,6 +218,17 @@ RCT_EXPORT_METHOD(getAlbums:(NSDictionary *)params
       }];
     }
   }];
+   [assetCollectionFetchResult2 enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+      PHFetchOptions *const assetFetchOptions = [RCTConvert PHFetchOptionsFromMediaType:mediaType fromTime:0 toTime:0];
+      // Enumerate assets within the collection
+      PHFetchResult<PHAsset *> *const assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:obj options:assetFetchOptions];
+      if (assetsFetchResult.count > 0) {
+        [result addObject:@{
+          @"title": [obj localizedTitle],
+          @"count": @(assetsFetchResult.count)
+        }];
+      }
+    }];
   resolve(result);
 }
 
@@ -267,7 +281,7 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
   // other groupTypes values require the "album" collection type.
   PHAssetCollectionType const collectionType = ([groupTypes isEqualToString:@"all"]
                                                 ? PHAssetCollectionTypeSmartAlbum
-                                                : PHAssetCollectionTypeAlbum);
+                                                : PHAssetCollectionTypeSmartAlbum);
   PHAssetCollectionSubtype const collectionSubtype = [RCTConvert PHAssetCollectionSubtype:groupTypes];
   
   // Predicate for fetching assets within a collection
