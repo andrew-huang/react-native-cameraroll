@@ -15,7 +15,8 @@ declare namespace CameraRoll {
     | 'PhotoStream'
     | 'SavedPhotos'
     | 'Screenshots'
-    | 'Selfies'};
+    | 'Selfies'
+    | 'SmartAlbum'};
 
   type AssetType = 'All' | 'Videos' | 'Photos';
 
