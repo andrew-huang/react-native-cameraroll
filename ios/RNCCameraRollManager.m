@@ -282,8 +282,10 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
   // other groupTypes values require the "album" collection type.
   PHAssetCollectionType const collectionType = ([groupTypes isEqualToString:@"all"]
                                                 ? PHAssetCollectionTypeSmartAlbum
-                                                : [groupTypes isEqualToString:@"smartAlbum"] 
+                                                : [groupTypes isEqualToString:@"screenshots"]
                                                 ? PHAssetCollectionTypeSmartAlbum 
+                                                : [groupTypes isEqualToString:@"selfies"]
+                                                ? PHAssetCollectionTypeSmartAlbum
                                                 : PHAssetCollectionTypeAlbum);
   PHAssetCollectionSubtype const collectionSubtype = [RCTConvert PHAssetCollectionSubtype:groupTypes];
   
